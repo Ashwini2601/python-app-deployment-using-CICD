@@ -8,6 +8,8 @@ Whenever code is pushed to the GitHub repository, the pipeline automatically bui
 
 This Python CI/CD pipeline demonstrates automated deployment of a Python application on an AWS EC2 instance using Jenkins, GitHub
 
+![Architecture](Images/architecture.png)
+
 ### Technologies & Platforms
 
 1. AWS EC2 – Hosting Python application and Jenkins
@@ -20,14 +22,17 @@ This Python CI/CD pipeline demonstrates automated deployment of a Python applica
 ### Step 1: Launch EC2 Instances
 1.  Launch 2 Ubuntu EC2 instances:
 
- * Jenkins Server – for CI/CD
- * Python Application Server – to host your app
+    1. Jenkins Server – for CI/CD
+    2. Python Application Server – to host your app
 
 2. Configure Security Groups:
 
- * SSH (22)
- * HTTP (80) / Python app port (5000 or custom)
- * Jenkins port (8080)
+     1. SSH (22)
+     2.  HTTP (80) / Python app port (5000 or custom)
+     3.  Jenkins port (8080)
+
+![Architecture](Images/img1.png)
+
  ### Step 2: Create & Clone GitHub Repository
 
 1. Create a new repository: Python-app-deployment-using-CICD-pipeline
@@ -35,6 +40,8 @@ This Python CI/CD pipeline demonstrates automated deployment of a Python applica
 2. Clone repository on local machine:
    1. git clone https://github.com/<username>/Python-app-deployment-using-CICD-pipeline.git
    2. cd Python-app-deployment-using-CICD-pipeline
+
+   ![Architecture](Images/img2.png)
 
 ### Step 3: Create Application & Jenkins Configuration Files
 
@@ -92,6 +99,8 @@ gunicorn==20.1.0
    3. Private Key: paste key or choose file
    4. ID: python-app-key
 
+   ![Architecture](Images/img3.png)
+
  #### Step 6: Create Jenkins Job
 
  1. New Item → Pipeline → Name: Python-CICD-Pipeline
@@ -103,6 +112,11 @@ gunicorn==20.1.0
 
 1. Trigger Build Now in Jenkins
 2. Check Console Output
+
+![Architecture](Images/img4.png)
+
 3. Access app in browser:http://<EC2-PUBLIC-IP:5000
+
+![Architecture](Images/img5.png)
 
 #### Your Python app is now deployed and running using Jenkins CI/CD Pipeline on AWS EC2!
