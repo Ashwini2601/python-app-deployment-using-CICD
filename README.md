@@ -76,6 +76,59 @@ gunicorn==20.1.0
 
 ```
 #### 3. Jenkinsfile
+```
+pipeline {
+    agent any
+
+    environment {
+        SSH_CRED = 'python-app-key'
+        SERVER_IP = '43.201.96.60'
+        REMOTE_USER = 'ubuntu'
+        APP_DIR = '/home/ubuntu/pythonapp'
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/iamtruptimane/pythonapp.git', branch: 'main'
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                sshagent(credentials: ["${SSH_CRED}"]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "mkdir -p ${APP_DIR}"
+                        scp -r Dockerfile README.md app.py requirements.txt test ${REMOTE_USER}@${SERVER_IP}:${APP_DIR}/
+                    '''
+                }
+            }
+        }
+
+        stage('Install & Run App') {
+            steps {
+                sshagent(["${SSH_CRED}"]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} '
+                            sudo apt update &&
+                            sudo apt install -y python3-venv python3-pip &&
+                            cd ${APP_DIR} &&
+                            python3 -m venv venv &&
+                            source venv/bin/activate &&
+                            pip install --upgrade pip &&
+                            pip install -r requirements.txt &&
+                            nohup python3 app.py --host=0.0.0.0 > app.log 2>&1 &
+                            exit 0
+                        '
+                    """
+                }
+            }
+        }
+    }
+}
+
+
+```
 
 #### 4. Commit & Push:
 1. git add .
